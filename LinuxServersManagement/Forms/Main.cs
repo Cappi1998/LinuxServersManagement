@@ -295,7 +295,7 @@ namespace LinuxServerManagement
             }
 
             dataGridView1.DataSource = dt;
-            //lbl_actionCount.Text = actions.Count().ToString();
+            lbl_actionCount.Text = actions.Count().ToString();
         }
 
         private void btn_add_Folder_Click(object sender, EventArgs e)
@@ -509,6 +509,12 @@ namespace LinuxServerManagement
         private void txt_FolderName_TextChanged(object sender, EventArgs e)
         {
             lbl_DiretoryExampleCreateFolder.Text = $"/root/{txt_FolderName.Text}/";
+        }
+
+        private void btn_ClearActionList_Click(object sender, EventArgs e)
+        {
+            actions = new List<Models.Action>();
+            ReloadActionList();
         }
     }
 }

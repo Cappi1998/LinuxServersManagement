@@ -66,6 +66,9 @@ namespace LinuxServerManagement
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.txtConsole = new System.Windows.Forms.RichTextBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.lbl_actionCount = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.btn_ClearActionList = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -214,6 +217,9 @@ namespace LinuxServerManagement
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.btn_ClearActionList);
+            this.groupBox2.Controls.Add(this.lbl_actionCount);
+            this.groupBox2.Controls.Add(this.label11);
             this.groupBox2.Controls.Add(this.groupBox3);
             this.groupBox2.Controls.Add(this.dataGridView1);
             this.groupBox2.Location = new System.Drawing.Point(12, 289);
@@ -430,6 +436,34 @@ namespace LinuxServerManagement
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Console Log";
             // 
+            // lbl_actionCount
+            // 
+            this.lbl_actionCount.AutoSize = true;
+            this.lbl_actionCount.Location = new System.Drawing.Point(782, 3);
+            this.lbl_actionCount.Name = "lbl_actionCount";
+            this.lbl_actionCount.Size = new System.Drawing.Size(13, 13);
+            this.lbl_actionCount.TabIndex = 18;
+            this.lbl_actionCount.Text = "0";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(697, 3);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(79, 13);
+            this.label11.TabIndex = 17;
+            this.label11.Text = "Actions Count: ";
+            // 
+            // btn_ClearActionList
+            // 
+            this.btn_ClearActionList.Location = new System.Drawing.Point(640, 295);
+            this.btn_ClearActionList.Name = "btn_ClearActionList";
+            this.btn_ClearActionList.Size = new System.Drawing.Size(165, 43);
+            this.btn_ClearActionList.TabIndex = 19;
+            this.btn_ClearActionList.Text = "Clear Action List";
+            this.btn_ClearActionList.UseVisualStyleBackColor = true;
+            this.btn_ClearActionList.Click += new System.EventHandler(this.btn_ClearActionList_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -454,6 +488,7 @@ namespace LinuxServerManagement
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -502,6 +537,9 @@ namespace LinuxServerManagement
         public System.Windows.Forms.Label lbl_DiretoryExample;
         public System.Windows.Forms.Label lbl_DiretoryExampleCreateFolder;
         private System.Windows.Forms.Label label10;
+        public System.Windows.Forms.Label lbl_actionCount;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Button btn_ClearActionList;
     }
 }
 
