@@ -65,6 +65,7 @@ namespace LinuxServerManagement
             this.txt_User.Name = "txt_User";
             this.txt_User.Size = new System.Drawing.Size(220, 20);
             this.txt_User.TabIndex = 3;
+            this.txt_User.Text = "root";
             // 
             // txt_Host
             // 

@@ -392,12 +392,9 @@ namespace LinuxServerManagement
                             var folderName = $"{sftpClient.WorkingDirectory}/{action.FolderName}";
                             Log.info($"{sv.Identification} - Try create folder '{folderName}'");
 
-                            if (!sftpClient.Exists(folderName))
-                            {
-                                sftpClient.CreateDirectory(folderName);
-                            }
-
-                            if (sftpClient.Exists(folderName))
+                            bool sucess = CreateFolder(sftpClient, folderName);
+                            
+                            if (sucess)
                             {
                                 Log.info($"{sv.Identification} - Folder '{folderName}' successfully created!");
                             }
@@ -405,7 +402,6 @@ namespace LinuxServerManagement
                             {
                                 Log.error($"{sv.Identification} - Failed to create folder '{folderName}'");
                             }
-
 
                             break;
                         }
@@ -418,53 +414,69 @@ namespace LinuxServerManagement
                                 continue;
                             }
 
-                            string[] files = Directory.GetFiles(action.SendFilesFrom);
 
-                            foreach (var file in files)
+                            string[] dirs = Directory.GetDirectories(action.SendFilesFrom, "*", SearchOption.AllDirectories);
+
+                            var FirstFolder_Path = $"{sftpClient.WorkingDirectory}/{action.SendFilesTo}/";
+
+                            bool sucess = CreateFolder(sftpClient, FirstFolder_Path);
+
+                            if (sucess)
                             {
-                                var folderName = $"{sftpClient.WorkingDirectory}/{action.SendFilesTo}/";
-                                string filename = Path.GetFileName(file);
+                                Log.info($"{sv.Identification} - Folder '{FirstFolder_Path}' successfully created!");
+                            }
+                            else
+                            {
+                                Log.error($"{sv.Identification} - Failed to create folder '{FirstFolder_Path}' operation aborted for this server");
+                                continue;
+                            }
 
-                                Log.info($"{sv.Identification} - Try send file '{filename}'");
-                                var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
-                                if (fileStream != null)
+                            foreach (var dir in dirs)
+                            {
+                                int index = dir.IndexOf(action.SendFilesFrom);
+                                string cleanPath = (index < 0)
+                                    ? dir
+                                    : dir.Remove(index, action.SendFilesFrom.Length);
+
+                                var PathToCreate = Path.Combine($"{sftpClient.WorkingDirectory}/{action.SendFilesTo}{cleanPath.Replace("\\", "/")}/");
+
+                                sucess = CreateFolder(sftpClient, PathToCreate);
+
+                                if (sucess)
                                 {
-                                    //If you have a folder located at sftp://ftp.example.com/share
-                                    //then you can add this like:
-                                    sftpClient.UploadFile(fileStream, folderName + filename, null);
+                                    Log.info($"{sv.Identification} - Folder '{PathToCreate}' successfully created!");
+                                }
+                                else
+                                {
+                                    Log.error($"{sv.Identification} - Failed to create folder '{PathToCreate}'");
                                 }
 
                             }
 
-                            var directories = Directory.GetDirectories(action.SendFilesFrom);
+                            string[] entries = Directory.GetFileSystemEntries(action.SendFilesFrom, "*", SearchOption.AllDirectories);
 
-                            foreach (var dir in directories)//Check SubFolders
+                            foreach (var file in entries)
                             {
-                                string SubFolderName = new DirectoryInfo(dir).Name;
-                                var folderName = $"{sftpClient.WorkingDirectory}/{action.SendFilesTo}/{SubFolderName}/";
-                                Log.info($"{sv.Identification} - Try create folder '{folderName}'");
-                                if (!sftpClient.Exists(folderName))
+                                if (File.Exists(file))
                                 {
-                                    sftpClient.CreateDirectory(folderName);
-                                }
+                                    int index = file.IndexOf(action.SendFilesFrom);
+                                    string cleanPath = (index < 0)
+                                        ? file
+                                        : file.Remove(index, action.SendFilesFrom.Length);
 
-                                string[] filesSubFolder = Directory.GetFiles(dir);
+                                    var folderName = $"{sftpClient.WorkingDirectory}/{action.SendFilesTo}/";
 
-
-                                foreach (var file in filesSubFolder)
-                                {
-                                    string filename = Path.GetFileName(file);
-
-                                    Log.info($"{sv.Identification} - Try send file '{filename}'");
+                                    Log.info($"{sv.Identification} - Try send file '{cleanPath}'");
                                     var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
                                     if (fileStream != null)
                                     {
                                         //If you have a folder located at sftp://ftp.example.com/share
                                         //then you can add this like:
-                                        sftpClient.UploadFile(fileStream, folderName + filename, null);
+                                        sftpClient.UploadFile(fileStream, $"{folderName}{cleanPath.Replace("\\", "/")}", null);
                                     }
 
                                 }
+
                             }
 
                             break;
@@ -476,6 +488,16 @@ namespace LinuxServerManagement
                         }
                 }
             }
+        }
+
+        public static bool CreateFolder(SftpClient sftpClient, string FolderPath)
+        {
+            if (!sftpClient.Exists(FolderPath))
+            {
+                sftpClient.CreateDirectory(FolderPath);
+            }
+
+            if (sftpClient.Exists(FolderPath)) return true; else return false;
         }
 
 
